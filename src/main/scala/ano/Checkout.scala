@@ -11,8 +11,8 @@ object Checkout {
     case Orange => BigDecimal("0.25")
   }
 
-  def totalCost(items: Seq[Item]): BigDecimal = items match {
-    case Nil => BigDecimal("0.0")
-    case elem :: Nil => price(elem)
+  def totalCost(items: Seq[Item]): BigDecimal = items.foldLeft(BigDecimal("0.0")) {
+    case (acc, item) => acc + price(item)
   }
+
 }
