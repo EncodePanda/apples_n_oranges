@@ -26,6 +26,13 @@ class CheckoutStep2Test extends FunSpec with Matchers {
         val items = List(Apple, Orange, Orange)
         totalCost(items) should equal(BigDecimal("1.1"))
       }
+
+      it("should return discount apples") {
+        val items1 = List(Apple, Apple, Orange, Apple, Apple, Apple, Apple)
+        val items2 = List(Apple, Apple, Orange, Apple, Apple, Apple)
+        totalCost(items1) should equal(BigDecimal("2.05"))
+        totalCost(items2) should equal(BigDecimal("2.05"))
+      }
     }
   }
 }

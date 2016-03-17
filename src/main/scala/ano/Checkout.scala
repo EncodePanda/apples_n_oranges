@@ -47,7 +47,9 @@ object Step2Strategy {
     def zero = Checked.ZERO
     implicit def append(c1: Checked, c2: => Checked): Checked = {
       val initial = c1.copy(sum = c1.sum + c2.sum, scanned = c1.scanned |+| c2.scanned)
-      initial
+      val noApples = initial.scanned.get(Apple).getOrElse(0)
+      val applesDiscount: BigDecimal = (noApples / 2) * Checkout.price(Apple)
+      initial.copy(sum = initial.sum - applesDiscount, scanned = initial.scanned + (Apple -> noApples % 2) )
     }
   }
 }
