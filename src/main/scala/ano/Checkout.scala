@@ -4,6 +4,10 @@ sealed trait Item
 object Apple extends Item
 object Orange extends Item
 
+object Item {
+  def all: Seq[Item] = List(Apple, Orange)
+}
+
 object Checkout {
 
   def price(item: Item) = item match {
