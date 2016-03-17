@@ -43,17 +43,28 @@ object Step1Strategy {
 }
 
 object Step2Strategy {
+
+  private def discount(item: Item, initial: Checked): (BigDecimal, Int) = {
+    val skipBy = item match {
+      case Apple => 2
+      case Orange => 3
+    }
+    val no = initial.scanned.get(item).getOrElse(0)
+    val discount: BigDecimal = (no / skipBy) * Checkout.price(item)
+    val left = no % skipBy
+    (discount, left)
+  }
+
   implicit def strategy: Monoid[Checked] = new Monoid[Checked]() {
     def zero = Checked.ZERO
     implicit def append(c1: Checked, c2: => Checked): Checked = {
       val initial = c1.copy(sum = c1.sum + c2.sum, scanned = c1.scanned |+| c2.scanned)
-      val noApples = initial.scanned.get(Apple).getOrElse(0)
-      val noOranges = initial.scanned.get(Orange).getOrElse(0)
-      val applesDiscount: BigDecimal = (noApples / 2) * Checkout.price(Apple)
-      val orangesDiscount: BigDecimal = (noOranges / 3) * Checkout.price(Orange)
-      val withAppleDiscount = initial.copy(sum = initial.sum - applesDiscount, scanned = initial.scanned + (Apple -> noApples % 2) )
-      val withOrangeDiscount = initial.copy(sum = withAppleDiscount.sum - orangesDiscount, scanned = withAppleDiscount.scanned + (Orange -> noOranges % 3) )
-      withOrangeDiscount
+      val (applesDiscount, applesLeft) = discount(Apple, initial)
+      val (orangesDiscount, orangesLeft) = discount(Orange, initial)
+      initial.copy(
+        sum = initial.sum - applesDiscount - orangesDiscount,
+        scanned = initial.scanned + (Apple -> applesLeft) + (Orange -> orangesLeft)
+      )
     }
   }
 }
