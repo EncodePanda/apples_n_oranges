@@ -5,14 +5,17 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalacheck.Gen
 
 
-class CheckoutTest extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
+class CheckoutStep1Test extends FunSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   import Checkout._
 
   val itemGen: Gen[Item] = Gen.oneOf(Apple, Orange)
   val itemsGen: Gen[List[Item]] = Gen.listOf(itemGen)
 
+  implicit def strategy = Step1Strategy.strategy
+
   describe("Checkout.totalCost") {
+
     describe("properties: ") {
       it("value is always higher or equal to zero") {
         forAll(itemsGen) { items =>

@@ -25,7 +25,7 @@ object Checkout {
     case Orange => BigDecimal("0.25")
   }
 
-  def totalCost(items: Seq[Item])(implicit monoid: Monoid[Checked] = Step1Strategy.strategy): BigDecimal = {
+  def totalCost(items: Seq[Item])(implicit monoid: Monoid[Checked]): BigDecimal = {
     import monoid._
     val checked = items.foldLeft(monoid.zero) {
       case (acc, item) => acc |+| Checked(item)
@@ -39,5 +39,15 @@ object Step1Strategy {
     def zero = Checked.ZERO
     implicit def append(c1: Checked, c2: => Checked): Checked =
       c1.copy(sum = c1.sum + c2.sum, scanned = c1.scanned |+| c2.scanned)
+  }
+}
+
+object Step2Strategy {
+  implicit def strategy: Monoid[Checked] = new Monoid[Checked]() {
+    def zero = Checked.ZERO
+    implicit def append(c1: Checked, c2: => Checked): Checked = {
+      val initial = c1.copy(sum = c1.sum + c2.sum, scanned = c1.scanned |+| c2.scanned)
+      initial
+    }
   }
 }
