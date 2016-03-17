@@ -5,5 +5,5 @@ object Apple extends Item
 object Orange extends Item
 
 object Checkout {
-  def totalCost(items: Seq[Item]): BigDecimal = ???
+  def totalCost(items: Seq[Item]): BigDecimal = BigDecimal("0.0")
 }
