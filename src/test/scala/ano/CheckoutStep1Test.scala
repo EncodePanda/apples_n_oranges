@@ -33,7 +33,7 @@ class CheckoutStep1Test extends FunSpec with Matchers with GeneratorDrivenProper
     describe("scenarios: ") {
 
       it("should return zero for empty list") {
-        totalCost(Seq.empty[Item]) should equal(BigDecimal("0"))
+        totalCost(List.empty[Item]) should equal(BigDecimal("0"))
       }
 
       it("should return item value for one-element list") {
